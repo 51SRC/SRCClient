@@ -3,8 +3,8 @@
 #include "Delay.h"
 
 
-sbit LED      =  P5 ^ 4;         		  // LED灯
-sbit Buzzer    =  P5 ^ 5;           	// 蜂鸣器
+sbit LED      =  P3 ^ 2;         		  // LED灯
+sbit Buzzer    =  P5 ^ 4;           	// 蜂鸣器
 
 //sbit MOTORIN1 =  P1 ^ 5;          		// 控制电机方向
 //sbit MOTORIN2 =  P1 ^ 6;          	  // 控制电机方向

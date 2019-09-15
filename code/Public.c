@@ -20,11 +20,12 @@ unsigned char Motor_Level = 1;
 unsigned int Num_Distance = 0;
 
 
-unsigned char crc8_chk_value(unsigned char *message, unsigned char len)
-{
-    uint8 crc;
-    uint8 i;
-    crc = 0;
+///校验数据准确性 做CRC校验
+
+unsigned char CheckData(unsigned char *message) {
+    uint8 crc = 0;
+    uint8 len = 9;
+    uint8 i=0;
     while(len--)
     {
         crc ^= *message++;
@@ -38,16 +39,6 @@ unsigned char crc8_chk_value(unsigned char *message, unsigned char len)
         }
     }
     return crc;
-}
-
-///校验数据准确性 做CRC校验
-
-unsigned char CheckData(unsigned char *CHECK_DATA) {
-
-  //  unsigned char  CHECKSUM = CHECK_DATA[1]+CHECK_DATA[2]+CHECK_DATA[3]+CHECK_DATA[4]-0x01;
-
-    return crc8_chk_value(CHECK_DATA,9);
-
 }
 
 

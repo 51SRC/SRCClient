@@ -36,10 +36,10 @@ bit MOTORRUNING = 1;
 bit Engine_Status = 0;//引擎开关状态
 bit Auto_Driver = 0;//自动驾驶状体
 
-static const uint8 SRCHeader = 0x7E;
-static const uint8 SRCTail = 0x7E;
-static const uint8 SRCDeviceID = 0x33;
-static const uint8 SRCCommunicationType = 0x01;
+ uint8 SRCHeader = 0x7E;
+ uint8 SRCTail = 0x7E;
+ uint8 SRCDeviceID = 0x33;
+ uint8 SRCCommunicationType = 0x01;
 
 
 uint8 DATA_LENGTH = 9;
@@ -55,7 +55,6 @@ void SendAckData(unsigned char *RES_DATA);
 void UART2_Init(void);
 void Device_Init(void);
 void VehicleDiagnosis(unsigned int distance, unsigned char level);
-void VehicleAutoDriver(void);
 
  //摄像头   白负  黑正
 
@@ -76,39 +75,14 @@ void main()
     while(1) {
 			
 			WDT_CONTR |= 0x10;  //喂狗程序
+										
+
 			
-//			GetDistance();//用于计算超声波
-//			
-//			VehicleDiagnosis(Num_Distance, Motor_Level);
-//			
-//			VehicleAutoDriver();
 			
 		};
 }
 
 
-//小车自动驾驶
-void VehicleAutoDriver(void){
-	
-	if(!Auto_Driver){
-			return;
-	}
-
-}
-
-
-/////紧急制动
-//void VehicleDiagnosis(unsigned int distance, unsigned char level){
-//	
-//	if( 1 == Motor_CurrentStatus() ){
-
-//			if( distance <= (20 + 5*(float)level) ){
-//				Motor_Actions_Status(0,0);
-//				Motor_Level = 1;
-//			}
-//	}
-//	
-//}
 
 
 void Device_Init(void) {
@@ -131,7 +105,7 @@ void Device_Init(void) {
 		MOTORRUNING = 1;
 		Engine_Status = 0;
 		
-    Buzzer_Actions_Status(0);
+    Buzzer_Actions_Status(1);
 	  Led_Actions_Status(0);
 	  InitMoter();
 		Motor_Actions_Status(0,0);
@@ -218,10 +192,10 @@ void UART_R()
 
 void ResponseData(unsigned char *RES_DATA) {
 	
-	if((RES_DATA[1]== SRCDeviceID &&  RES_DATA[2]== 0x01) ||  RES_DATA[2]== 0x02){
-		
-		
-		if(  RES_DATA[4]== 0x01 && CheckData(RES_DATA) == RES_DATA[DATA_LENGTH-2]) {
+
+	if(RES_DATA[1]== 0x33 &&  RES_DATA[2]== 0x01){
+		//tudo 校验错误
+		if(  RES_DATA[4]== 0x01 || (CheckData(RES_DATA) == RES_DATA[DATA_LENGTH-2])) {
 				switch(RES_DATA[3]){
 					case 0x00:{//心跳包
 						if( RES_DATA[5]==0x00 && RES_DATA[6]==0x00){
@@ -236,10 +210,10 @@ void ResponseData(unsigned char *RES_DATA) {
 					};
 					case 0x02:{//喇叭
 						if( RES_DATA[6]==0x02){
-							 Buzzer_Actions_Status(1);
+							 Buzzer_Actions_Status(0);
 							SendAckData(RES_DATA);
 						}else if( RES_DATA[6]==0x01){
-							Buzzer_Actions_Status(0);
+							Buzzer_Actions_Status(1);
 							SendAckData(RES_DATA);
 						}
 						break;
@@ -282,8 +256,8 @@ void SendAckData(unsigned char *RES_DATA) {
     DATA_SEND[3]= RES_DATA[3];
     DATA_SEND[5]= RES_DATA[5];
     DATA_SEND[6]= RES_DATA[6];
+    DATA_SEND[DATA_LENGTH-1]= SRCTail;
     DATA_SEND[7]= CheckData(DATA_SEND);
-    DATA_SEND[DATA_LENGTH]= SRCTail;
 
     SendData(DATA_SEND);
 
