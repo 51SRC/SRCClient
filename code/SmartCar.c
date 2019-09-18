@@ -195,7 +195,7 @@ void ResponseData(unsigned char *RES_DATA) {
 
 	if(RES_DATA[1]== 0x33 &&  RES_DATA[2]== 0x01){
 		//tudo 校验错误
-		if(  RES_DATA[4]== 0x01 || (CheckData(RES_DATA) == RES_DATA[DATA_LENGTH-2])) {
+		if(  RES_DATA[4]== 0x01 && (CheckData(RES_DATA) == RES_DATA[DATA_LENGTH-2])) {
 				switch(RES_DATA[3]){
 					case 0x00:{//心跳包
 						if( RES_DATA[5]==0x00 && RES_DATA[6]==0x00){

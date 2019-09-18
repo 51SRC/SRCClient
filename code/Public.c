@@ -21,14 +21,22 @@ unsigned int Num_Distance = 0;
 
 
 ///校验数据准确性 做CRC校验
-
-unsigned char CheckData(unsigned char *message) {
-    uint8 crc = 0;
-    uint8 len = 9;
-    uint8 i=0;
+unsigned char CheckData(unsigned char *mes){
+    unsigned char crc = 0;
+    unsigned char len = 6;
+    unsigned char i=0;
+    unsigned char cs=0;
+    unsigned char message[] = {0,0,0,0,0,0};
+    unsigned char *s = message;
+    for( cs=0;cs<len;cs++){
+        
+        s[cs] = mes[cs+1];
+    }
+    
+    
     while(len--)
     {
-        crc ^= *message++;
+        crc ^= *s++;
         for(i = 0;i < 8;i++)
         {
             if(crc & 0x01)
