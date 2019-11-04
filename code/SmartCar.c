@@ -44,6 +44,7 @@ bit Auto_Driver = 0;//自动驾驶状体
 
 uint8 DATA_LENGTH = 9;
 uint8 CURRENT_LENGTH=0;
+uint8 CountTotle = 0;
 
 uint8 DATA_GET[]=  { 0x7E, 0, 0, 0, 0, 0, 0, 0, 0x7E};
 
@@ -65,17 +66,17 @@ void main()
 		Timer0_Init();
 		Timer1_Init();
 		//Timer4_Init();//定时器用于计算超声波
-	  WDT_CONTR = 0x06;       //看门狗定时器溢出时间计算公式: (12 * 32768 * PS) / FOSC (秒)
+	  WDT_CONTR = 0x07;       //看门狗定时器溢出时间计算公式: (12 * 32768 * PS) / FOSC (秒)
                             //设置看门狗定时器分频数为32,溢出时间如下:
-                            //11.0592M : 1.14s
-                            //18.432M  : 0.68s
-                            //20M      : 0.63s
+                            //11.0592M : 9s
+                            //18.432M  : 8s
+                            //20M      : 5s
     WDT_CONTR |= 0x20;      //启动看门狗
 
     while(1) {
 			
 			WDT_CONTR |= 0x10;  //喂狗程序
-										
+
 
 			
 			
@@ -172,10 +173,12 @@ void UART_R()
 {
     DATA_GET[CURRENT_LENGTH]=S2BUF ;
     CURRENT_LENGTH++;
+		CountTotle++;
 		
     if(CURRENT_LENGTH==DATA_LENGTH && !B_TX1_Busy)
     {
 				if(DATA_GET[0] == SRCHeader && DATA_GET[DATA_LENGTH-1] == SRCTail ){
+					CountTotle = 0;
 						CURRENT_LENGTH=0;
 						B_TX1_Busy = 1;
 						ResponseData(DATA_GET);
@@ -185,7 +188,14 @@ void UART_R()
        
     }else if(	CURRENT_LENGTH==2 && DATA_GET[0]==SRCHeader && DATA_GET[1]==SRCHeader){
 			CURRENT_LENGTH = 1;
+
 		}
+		
+		if(CountTotle > DATA_LENGTH){
+						IAP_CONTR = 0X60;
+		}
+		
+		
 		
 }
 
