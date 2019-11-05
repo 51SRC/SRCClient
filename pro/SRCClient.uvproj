@@ -382,6 +382,11 @@
               <FileType>1</FileType>
               <FilePath>..\code\Timer.c</FilePath>
             </File>
+            <File>
+              <FileName>DHT11.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\code\DHT11.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

@@ -1,5 +1,6 @@
 #include "Public.h"
 
+unsigned char DATA_Temphui[3]={0x00,0x00,0x00};
 
 /*
 

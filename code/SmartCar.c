@@ -14,6 +14,7 @@
 #include "Delay.h"
 #include "Timer.h"
 #include "Public.h"
+#include "DHT11.h"  //温湿度
 
 
 
@@ -77,7 +78,10 @@ void main()
 			
 			WDT_CONTR |= 0x10;  //喂狗程序
 
-
+		if(DHT11_Read_Data(&DATA_Temphui[0],&DATA_Temphui[1])==0)//温湿度检测
+			{
+				 DATA_Temphui[2]=1;
+			}
 			
 			
 		};
@@ -209,6 +213,15 @@ void ResponseData(unsigned char *RES_DATA) {
 				switch(RES_DATA[3]){
 					case 0x00:{//心跳包
 						if( RES_DATA[5]==0x00 && RES_DATA[6]==0x00){
+								if(DATA_Temphui[2]==1)
+								{
+										DATA_Temphui[2]=0;//复位将其  用于检测是否收到数据
+										
+										RES_DATA[3]=0x04;//高两位数据 4代表温湿度指令
+										RES_DATA[5]=DATA_Temphui[0];//高两位数据
+										RES_DATA[6]=DATA_Temphui[1];//进制转换  低两位数据位
+								}	
+																	
 							SendAckData(RES_DATA);
 							Led_Actions_NumAndMS(1,80);
 						}

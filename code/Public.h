@@ -11,6 +11,7 @@
 extern unsigned int PWMHEIGHT;
 extern unsigned char Motor_Level;
 extern unsigned int Num_Distance;
+extern unsigned char DATA_Temphui[3];   //ÎÂÊª¶È
 
 extern unsigned char CheckData(unsigned char *CHECK_DATA);
 extern unsigned char uint_to_hex(unsigned int num);
