@@ -251,6 +251,11 @@ void ResponseData(unsigned char *RES_DATA) {
 						}
 						break;
 					};
+					case 0xFF:{//÷ÿ∆Ù
+				  	SendAckData(RES_DATA);
+						IAP_CONTR = 0X20;
+						break;
+					};
 
 					default:
 						break;
